@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BEHYU Admin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%90%B1%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Chewy&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--grid:#d9fbfb;--ink:#1d1b26;--pink:#fcb5ff;--pink-soft:#fbd9ff;--cream:#fff0e1;--tag:#f6cf94;--tag-in:#fbe0b4;--peach:#ffdccb;--ok:#bdf0c9;--no:#ffc4c4;
+  color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--ink);background:#fff;font:18px 'Patrick Hand',system-ui,sans-serif;
+  background-image:linear-gradient(var(--grid) 2px,transparent 2px),linear-gradient(90deg,var(--grid) 2px,transparent 2px);background-size:26px 26px}
+h1,h2,h3,button,.btn{font-family:'Chewy','Patrick Hand',system-ui,sans-serif;font-weight:400}
+.view{display:none;max-width:1000px;margin:0 auto;padding:24px 20px 80px;min-height:100vh}
+.view.on{display:block}
+.bar{display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:30px}
+.banner{margin:0;font-size:clamp(26px,5vw,40px);padding:6px 40px 8px;background:var(--pink-soft);border:2px solid var(--ink);border-top-width:0;border-radius:0 0 8px 8px}
+.side{position:absolute;top:50%;transform:translateY(-50%);appearance:none;border:0;background:none;font-size:22px;cursor:pointer;color:var(--ink);padding:8px}
+.side.l{left:0}.side.r{right:0}
+.side:hover{text-decoration:underline wavy var(--pink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.btn{appearance:none;border:0;cursor:pointer;font-size:20px;padding:10px 22px;color:var(--ink);background:var(--tag-in);box-shadow:0 0 0 3px var(--tag);border-radius:6px 12px 8px 14px/12px 6px 14px 8px}
+.btn:hover{transform:rotate(-1.5deg)}
+.btn.sm{font-size:17px;padding:6px 14px}
+.sheet{background:#fff;border:2px solid var(--ink);border-radius:4px 10px 6px 12px/10px 4px 12px 6px;padding:24px}
+label{display:block;font-family:'Chewy',sans-serif;font-size:20px;margin:14px 0 6px}
+input[type=text],input[type=email],input[type=password],input[type=number],select{width:100%;font:inherit;padding:10px 12px;border:2px solid var(--ink);border-radius:4px;background:#fff;color:var(--ink)}
+
+/* login */
+.login{max-width:440px;margin:0 auto}
+.tabs{display:flex;gap:6px;margin-left:10px}
+.tab{appearance:none;border:2px solid var(--ink);border-bottom:0;background:var(--cream);font-size:20px;padding:8px 22px;border-radius:10px 10px 0 0;cursor:pointer;color:var(--ink)}
+.tab[aria-selected=true]{background:#fff;position:relative;top:2px}
+.login .sheet{border-radius:0 10px 8px 12px}
+.err{color:#b3261e;min-height:1.4em;margin:10px 0 0}
+.go{display:block;margin:14px 0 0 auto}
+
+/* dashboard */
+.chips{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.chip{appearance:none;border:0;cursor:pointer;font-size:19px;padding:8px 18px;background:var(--tag-in);color:var(--ink);box-shadow:0 0 0 3px var(--tag);border-radius:4px}
+.chip[aria-pressed=true]{background:var(--pink);box-shadow:0 0 0 3px var(--ink)}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:26px 20px}
+.pc{background:#fff;border:2px solid var(--ink);padding:12px;position:relative}
+.ph{aspect-ratio:1;border:2px solid var(--ink);display:grid;place-items:center;overflow:hidden;background:#fff}
+.ph img{width:100%;height:100%;object-fit:contain}
+.ph span{opacity:.4}
+.pc h3{margin:10px 0 6px;font-size:19px}
+.tag{display:inline-block;background:var(--tag-in);box-shadow:0 0 0 3px var(--tag);padding:2px 12px;margin:4px 8px 4px 3px;font-family:'Chewy',sans-serif;font-size:16px}
+.tag.low{background:var(--no);box-shadow:0 0 0 3px #f0a0a0}
+.acts{display:flex;gap:8px;margin-top:10px}
+.empty{text-align:center;opacity:.7;margin:40px 0}
+
+/* orders */
+.olist{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.shot{aspect-ratio:4/3;border:2px solid var(--ink);display:grid;place-items:center;overflow:hidden;background:#fff}
+.shot img{width:100%;height:100%;object-fit:contain}
+.shot span{opacity:.4;text-align:center;padding:10px}
+.opt{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:19px}
+.opt input{width:22px;height:22px;accent-color:#d56adb}
+.status{display:inline-block;padding:2px 12px;border:2px solid var(--ink);border-radius:20px;font-family:'Chewy',sans-serif;font-size:16px}
+.status.approved{background:var(--ok)}.status.rejected{background:var(--no)}.status.pending{background:var(--tag-in)}
+.decide{display:flex;gap:18px;justify-content:center;margin-top:24px}
+.decide .btn{min-width:150px;font-size:24px}
+dialog{border:2px solid var(--ink);border-radius:8px;padding:24px;width:min(440px,92vw);background:#fff;color:var(--ink)}
+dialog::backdrop{background:rgba(29,27,38,.4)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+@media (max-width:640px){.pay{grid-template-columns:1fr}.side.r{position:static;transform:none}.bar{flex-wrap:wrap;gap:8px}}
+@media (prefers-reduced-motion:reduce){.btn:hover{transform:none}.toast{transition:none}}
+/* flowers and stars on every page */
+.decor{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;color:var(--pink)}
+.dd{position:absolute;width:92px;height:92px;opacity:.85}
+.dd.f1{top:64px;left:2%}.dd.f2{top:64px;right:2%}
+.dd.s1{top:34%;left:1.5%;width:74px;height:74px}.dd.s2{top:38%;right:1.5%;width:74px;height:74px}
+.dd.f3{bottom:24%;left:3.5%;width:64px;height:64px}.dd.s3{bottom:28%;right:4%;width:64px;height:64px}
+@media (max-width:900px){.dd.s1,.dd.s2,.dd.f3,.dd.s3{display:none}.dd.f1,.dd.f2{width:54px;height:54px;top:56px}}
+.cuts{position:fixed;bottom:0;width:96px;height:96px;pointer-events:none}.cuts.l{left:6px}.cuts.r{right:6px}
+.view{position:relative;z-index:1}
+@media (max-width:640px){.cuts{width:64px;height:64px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="flower" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"><path d="M50 10c8 10 22 6 28 16s-6 18-4 28 16 16 8 24-20-2-32 6-22-6-28-16 6-18 0-28 6-22 28-30z"/><circle cx="50" cy="50" r="10"/></symbol>
+<symbol id="star" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"><path d="M50 8l11 28 30 2-23 19 8 30-26-16-26 16 8-30L9 38l30-2z"/></symbol>
+<symbol id="kit" viewBox="0 0 120 120" fill="none" stroke="#3a3748" stroke-width="3"><path d="M20 50L24 14l22 16h28l22-16 4 36c4 30-16 50-40 50S16 80 20 50z" fill="#f1eeff"/><circle cx="45" cy="55" r="13" fill="#fff"/><circle cx="78" cy="55" r="13" fill="#fff"/><circle cx="45" cy="55" r="5" fill="#3a3748"/><circle cx="78" cy="55" r="5" fill="#3a3748"/><path d="M55 72q6 6 12 0"/></symbol>
+</svg>
+<div class="decor" aria-hidden="true">
+  <svg class="dd f1"><use href="#flower"/></svg><svg class="dd f2"><use href="#flower"/></svg>
+  <svg class="dd s1"><use href="#star"/></svg><svg class="dd s2"><use href="#star"/></svg>
+  <svg class="dd f3"><use href="#flower"/></svg><svg class="dd s3"><use href="#star"/></svg>
+</div>
+<svg class="cuts l" aria-hidden="true"><use href="#kit"/></svg><svg class="cuts r" aria-hidden="true"><use href="#kit"/></svg>
+
+<!-- LOGIN -->
+<main id="login" class="view">
+  <div class="bar"><h1 class="banner">BEHYU Admin</h1></div>
+  <div class="login">
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tabLogin" aria-selected="true">Login</button>
+      <button class="tab" role="tab" id="tabReg" aria-selected="false">Register</button>
+    </div>
+    <div class="sheet">
+      <div id="nameRow" hidden><label for="aname">Name</label><input id="aname" type="text" autocomplete="name"></div>
+      <label for="email">Email</label><input id="email" type="email" autocomplete="email">
+      <label for="pass">Password</label><input id="pass" type="password" autocomplete="current-password">
+      <p id="hint" hidden style="font-size:16px;opacity:.75;margin:10px 0 0">The first account created here becomes the shop owner. After that, new admins must be added by the owner.</p>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn go" id="submit">Login</button>
+      <p style="margin:12px 0 0;text-align:right"><button class="side" id="forgot" style="position:static;transform:none;font-size:18px">Forgot password?</button></p>
+    </div>
+  </div>
+</main>
+
+<!-- DASHBOARD -->
+<main id="dashboard" class="view">
+  <div class="bar">
+    <button class="side l" id="logout">Log out</button>
+    <h1 class="banner">BEHYU Dashboard</h1>
+    <button class="side r" id="toOrders">Orders</button>
+  </div>
+  <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+  <div class="tools"><h2 id="count" style="margin:0;font-size:24px"></h2><button class="btn" id="add">Add item</button></div>
+  <div class="grid" id="grid"></div>
+  <p class="empty" id="none" hidden>No items in this category yet. Use Add item to create one.</p>
+</main>
+
+<!-- ORDERS -->
+<main id="orders" class="view">
+  <div class="bar">
+    <button class="side l" id="backDash">Back</button>
+    <h1 class="banner">Payment &amp; Orders</h1>
+  </div>
+  <div class="olist" id="olist" role="group" aria-label="Orders"></div>
+  <div class="sheet" id="odetail"></div>
+</main>
+
+<!-- ADD / EDIT -->
+<dialog id="dlg">
+  <h2 id="dtitle" style="margin:0 0 4px">Add item</h2>
+  <label for="fname">Name</label><input id="fname" type="text">
+  <label for="fcat">Category</label><select id="fcat"></select>
+  <label for="fprice">Price (Nu.)</label><input id="fprice" type="number" min="0">
+  <label for="fstock">Stock</label><input id="fstock" type="number" min="0">
+  <label for="fsizes">Sizes (separate with commas, or leave empty)</label><input id="fsizes" type="text">
+  <label for="fimg">Photo (JPG or PNG, up to 5MB)</label><input id="fimg" type="file" accept="image/png,image/jpeg">
+  <label style="display:flex;gap:10px;align-items:center;margin-top:14px;font-family:'Patrick Hand',sans-serif"><input id="factive" type="checkbox" checked style="width:22px;height:22px">Show in the shop</label>
+  <p class="err" id="ferr" role="alert"></p>
+  <div class="acts" style="justify-content:flex-end"><button class="btn sm" id="cancel">Cancel</button><button class="btn sm" id="save">Save</button></div>
+</dialog>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* The key below is the PUBLIC key: it is meant to be in the website. Admin rights come from your account, not from this file. */
+const SB_URL="https://xaziorrqepvwvypzyxdw.supabase.co";
+const SB_KEY="sb_publishable_a7OOVu12WoTwTKOelWo-Vw_lTavYp3h";
+const sb=supabase.createClient(SB_URL,SB_KEY);
+const CATS=["Women","Men","Bags","Lens","Accessories","Makeup"];
+const SHIP={post:"Post office",taxi:"Taxi / bus",collect:"Click and collect"};
+const PAYL={mbob:"mBoB / mPay",cod:"Cash on delivery"};
+const LBL={placed:"New",approved:"Approved",rejected:"Rejected",shipped:"Shipped",delivered:"Delivered",completed:"Completed"};
+let products=[],orders=[],filter="Women",editId=null,pendingFile=null,curOrder=null,adminOK=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pub=path=>path?sb.storage.from("product-images").getPublicUrl(path).data.publicUrl:"";
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("show"),2200)}
+const go=h=>location.hash.slice(1)===h?route():(location.hash=h);
+const err=m=>$("err").textContent=m;
+
+async function isAdmin(session){
+  if(!session)return false;
+  const{data}=await sb.from("profiles").select("role").eq("id",session.user.id).single();
+  return !!data&&data.role==="admin";
+}
+
+async function route(){
+  let h=location.hash.slice(1);
+  if(!["login","dashboard","orders"].includes(h))h=adminOK?"dashboard":"login";
+  if(!adminOK&&h!=="login")h="login";
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id===h));
+  if(h==="dashboard"){await loadProducts();renderDash();newCount()}
+  if(h==="orders"){await loadOrders();renderOrders()}
+  window.scrollTo(0,0);
+}
+addEventListener("hashchange",route);
+
+/* login / register */
+let mode="login";
+function setMode(m){mode=m;$("tabLogin").setAttribute("aria-selected",m==="login");$("tabReg").setAttribute("aria-selected",m==="register");
+  $("nameRow").hidden=m==="login";$("forgot").parentElement.hidden=m!=="login";$("hint").hidden=m==="login";$("submit").textContent=m==="login"?"Login":"Register";err("")}
+$("forgot").onclick=async()=>{const e=$("email").value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(e))return err("Type your email above first.");
+  const r=await sb.auth.resetPasswordForEmail(e,{redirectTo:location.origin+location.pathname.replace(/[^/]*$/,"")});
+  err(r.error?r.error.message+" (Supabase’s built-in email only sends to the owner’s own Supabase team email. Set up custom email sending in Supabase to send to anyone.)":"If that email has an account, a reset link is on its way. You’ll choose the new password on the shop website.")};
+$("tabLogin").onclick=()=>setMode("login");$("tabReg").onclick=()=>setMode("register");
+$("submit").onclick=async()=>{
+  const e=$("email").value.trim(),p=$("pass").value,n=$("aname").value.trim();
+  if(!/^\S+@\S+\.\S+$/.test(e))return err("Enter a valid email address.");
+  if(p.length<6)return err("Password needs at least 6 characters.");
+  if(mode==="register"&&!n)return err("Enter your name.");
+  $("submit").disabled=true;err("");
+  const done=m=>{$("submit").disabled=false;err(m)};
+  const r=mode==="login"?await sb.auth.signInWithPassword({email:e,password:p}):await sb.auth.signUp({email:e,password:p,options:{data:{full_name:n}}});
+  if(r.error)return done(r.error.message);
+  if(!r.data.session)return done("Account created. Check your email to confirm it, then log in. (While testing you can turn off “Confirm email” in Supabase.)");
+  let ok=await isAdmin(r.data.session);
+  if(!ok){
+    const c=await sb.rpc("claim_first_admin");
+    if(c.error){await sb.auth.signOut();return done("The admin setup update hasn’t been run in Supabase yet. Run behyu-supabase-update-1.sql, then try again.")}
+    ok=c.data===true;if(ok)toast("You’re now the shop owner");
+  }
+  if(!ok){await sb.auth.signOut();return done(mode==="register"?"Account created, but this shop already has an admin. Ask them to give you access.":"This account isn’t an admin. Ask the shop owner for access.")}
+  adminOK=true;$("pass").value="";$("submit").disabled=false;go("dashboard");
+};
+$("logout").onclick=async()=>{await sb.auth.signOut();adminOK=false;go("login")};
+
+/* products */
+async function loadProducts(){
+  const{data,error}=await sb.from("products").select("*").order("id");
+  if(error)return toast("Couldn’t load products: "+error.message);
+  products=data;
+}
+let lastNew=null;
+async function newCount(){
+  const{count}=await sb.from("orders").select("id",{count:"exact",head:true}).eq("status","placed");
+  const n=count||0;
+  $("toOrders").textContent=n?`Orders (${n} new)`:"Orders";
+  document.title=n?`(${n}) BEHYU Admin`:"BEHYU Admin";
+  if(lastNew!==null&&n>lastNew)toast("New order received!");
+  lastNew=n;
+}
+setInterval(()=>{if(adminOK&&document.visibilityState==="visible"&&location.hash.slice(1)==="dashboard")newCount()},60000);
+function renderDash(){
+  $("chips").innerHTML=CATS.map(c=>`<button class="chip" data-c="${c}" aria-pressed="${c===filter}">${c}</button>`).join("");
+  const list=products.filter(p=>p.category===filter);
+  $("count").textContent=`${filter} (${list.length})`;
+  $("none").hidden=list.length>0;
+  $("grid").innerHTML=list.map(p=>`<article class="pc">
+    <div class="ph">${p.image_path?`<img src="${esc(pub(p.image_path))}" alt="${esc(p.name)}">`:`<span>no photo</span>`}</div>
+    <h3>${esc(p.name)}</h3>
+    <span class="tag">Nu.${p.price}</span><span class="tag${p.stock<=5?" low":""}">Stock: ${p.stock}</span>${p.active?"":`<span class="tag low">Hidden</span>`}
+    <div class="acts"><button class="btn sm" data-e="${p.id}">Edit</button><button class="btn sm" data-d="${p.id}">Delete</button></div></article>`).join("");
+}
+$("chips").onclick=e=>{const b=e.target.closest("[data-c]");if(b){filter=b.dataset.c;renderDash()}};
+$("grid").onclick=async e=>{
+  const ed=e.target.closest("[data-e]"),de=e.target.closest("[data-d]");
+  if(ed)openDlg(+ed.dataset.e);
+  if(de){const p=products.find(x=>x.id===+de.dataset.d);
+    if(!confirm(`Delete “${p.name}”? Past orders keep their record. To just hide it, use Edit and untick “Show in the shop”.`))return;
+    const r=await sb.from("products").delete().eq("id",p.id);
+    if(r.error)return toast("Couldn’t delete: "+r.error.message);
+    if(p.image_path)sb.storage.from("product-images").remove([p.image_path]);
+    await loadProducts();renderDash();toast("Item deleted")}
+};
+$("toOrders").onclick=()=>go("orders");
+$("backDash").onclick=()=>go("dashboard");
+
+/* add / edit */
+$("fcat").innerHTML=CATS.map(c=>`<option>${c}</option>`).join("");
+function openDlg(id){
+  editId=id||null;pendingFile=null;$("ferr").textContent="";$("fimg").value="";
+  const p=id?products.find(x=>x.id===id):null;
+  $("dtitle").textContent=p?"Edit item":"Add item";
+  $("fname").value=p?p.name:"";$("fcat").value=p?p.category:filter;
+  $("fprice").value=p?p.price:"";$("fstock").value=p?p.stock:"";
+  $("fsizes").value=p?(p.sizes||[]).join(", "):"S, M, L";$("factive").checked=p?p.active:true;
+  $("dlg").showModal();
+}
+$("add").onclick=()=>openDlg();
+$("cancel").onclick=()=>$("dlg").close();
+$("fimg").onchange=e=>{const f=e.target.files[0];pendingFile=null;if(!f)return;
+  if(!/^image\/(png|jpeg)$/.test(f.type)||f.size>5*1024*1024){e.target.value="";return $("ferr").textContent="Photo must be a JPG or PNG up to 5MB."}
+  $("ferr").textContent="";pendingFile=f};
+$("save").onclick=async()=>{
+  const name=$("fname").value.trim(),price=Number($("fprice").value),stock=Number($("fstock").value);
+  if(!name)return $("ferr").textContent="Enter an item name.";
+  if($("fprice").value===""||!Number.isInteger(price)||price<0)return $("ferr").textContent="Enter the price as a whole number.";
+  if($("fstock").value===""||!Number.isInteger(stock)||stock<0)return $("ferr").textContent="Enter the stock as a whole number.";
+  const row={name,category:$("fcat").value,price,stock,active:$("factive").checked,sizes:$("fsizes").value.split(",").map(x=>x.trim()).filter(Boolean)};
+  $("save").disabled=true;
+  if(pendingFile){
+    const path=`${Date.now()}-${Math.random().toString(36).slice(2,8)}.${pendingFile.type==="image/png"?"png":"jpg"}`;
+    const up=await sb.storage.from("product-images").upload(path,pendingFile,{contentType:pendingFile.type});
+    if(up.error){$("save").disabled=false;return $("ferr").textContent="Couldn’t upload the photo: "+up.error.message}
+    row.image_path=path;
+  }
+  const old=editId?products.find(x=>x.id===editId):null;
+  const r=editId?await sb.from("products").update(row).eq("id",editId):await sb.from("products").insert(row);
+  $("save").disabled=false;
+  if(r.error)return $("ferr").textContent="Couldn’t save: "+r.error.message;
+  if(old&&pendingFile&&old.image_path)sb.storage.from("product-images").remove([old.image_path]);
+  filter=row.category;$("dlg").close();await loadProducts();renderDash();toast(editId?"Item updated":"Item added");
+};
+
+/* orders */
+async function loadOrders(){
+  const{data,error}=await sb.from("orders").select("*,order_items(*)").order("id",{ascending:false});
+  if(error)return toast("Couldn’t load orders: "+error.message);
+  orders=data;if(!orders.some(o=>o.id===curOrder))curOrder=orders[0]?orders[0].id:null;
+}
+async function renderOrders(){
+  $("olist").innerHTML=orders.map(o=>`<button class="chip" data-o="${o.id}" aria-pressed="${o.id===curOrder}">#${o.id} ${esc(o.customer_name)} · ${LBL[o.status]}</button>`).join("");
+  const o=orders.find(x=>x.id===curOrder);
+  if(!o){$("odetail").innerHTML=`<p class="empty">No orders yet.</p>`;return}
+  let shot=`<span>No screenshot (cash on delivery)</span>`;
+  if(o.screenshot_path){
+    const{data}=await sb.storage.from("payment-screenshots").createSignedUrl(o.screenshot_path,300);
+    shot=data?`<img src="${esc(data.signedUrl)}" alt="Payment screenshot">`:`<span>Couldn’t load the screenshot</span>`;
+  }
+  if(o.id!==curOrder)return;
+  const act=o.status==="placed"?`<button class="btn" data-a="approve">Approve</button><button class="btn" data-a="reject">Reject</button>`
+    :o.status==="approved"?`<div style="width:100%;max-width:420px"><label for="trk">${o.shipping_method==="collect"?"Note for the customer (optional)":"Driver number or tracking number"}</label><input id="trk" type="text" value="${esc(o.tracking_info||"")}"><button class="btn" data-a="ship" style="margin-top:12px">Mark as shipped</button></div>`
+    :o.status==="shipped"?`<p>Shipped${o.tracking_info?` (${esc(o.tracking_info)})`:""}. Waiting for the customer to confirm they received it.</p>`:"";
+  $("odetail").innerHTML=`<h2 style="margin:0 0 14px;font-size:26px">Order #${o.id} <span class="status ${o.status==="placed"?"pending":o.status}">${LBL[o.status]}</span></h2>
+   <div class="pay"><div><div class="shot">${shot}</div></div>
+   <div><p style="margin:0 0 6px"><b>${esc(o.customer_name)}</b> · ${esc(o.phone)}<br>${esc(o.address)}, ${esc(o.town)}</p>
+   <p style="margin:0 0 6px">${esc(SHIP[o.shipping_method])}${o.pickup_point?`: ${esc(o.pickup_point)}`:""}<br>Payment: ${esc(PAYL[o.payment_method])}</p>
+   ${o.payment_method==="mbob"?`<label>Journal number</label><input type="text" value="${esc(o.journal_number||"")}" readonly>`:""}
+   <ul style="padding-left:20px">${o.order_items.map(i=>`<li>${esc(i.product_name)}${i.size?` (${esc(i.size)})`:""} ×${i.qty} · Nu.${i.unit_price*i.qty}</li>`).join("")}</ul>
+   Shipping: ${o.shipping_fee?"Nu."+o.shipping_fee:"free"}<br><b>Total to receive: Nu.${o.total}</b></div></div>
+   <div class="decide" style="flex-wrap:wrap">${act}</div>`;
+}
+$("olist").onclick=e=>{const b=e.target.closest("[data-o]");if(b){curOrder=+b.dataset.o;renderOrders()}};
+$("odetail").onclick=async e=>{
+  const b=e.target.closest("[data-a]");if(!b)return;
+  const o=orders.find(x=>x.id===curOrder),a=b.dataset.a;let upd;
+  if(a==="approve")upd={status:"approved"};
+  if(a==="reject"){if(!confirm("Reject this order? The items go back into stock."))return;upd={status:"rejected"}}
+  if(a==="ship"){const t=$("trk").value.trim();
+    if(o.shipping_method!=="collect"&&!t)return toast("Add the driver or tracking number first");
+    upd={status:"shipped",tracking_info:t||null}}
+  b.disabled=true;
+  const r=await sb.from("orders").update(upd).eq("id",o.id);
+  if(r.error){b.disabled=false;return toast("Couldn’t update: "+r.error.message)}
+  toast(`Order #${o.id}: ${LBL[upd.status].toLowerCase()}`);await loadOrders();renderOrders();
+};
+
+(async function init(){
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    adminOK=await isAdmin(session);
+  }catch(e){toast("Couldn’t reach the server. Check your internet connection.")}
+  route();
+})();
+</script>
+</body>
+</html>
